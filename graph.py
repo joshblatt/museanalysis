@@ -30,6 +30,13 @@ def average_brain_reading(data, wave_type: WaveType) -> float:
         return 0
 
 
+timestamps = []
+alpha_microvolts = []
+beta_microvolts = []
+gamma_microvolts = []
+delta_microvolts = []
+theta_microvolts = []
+
 with open('data.csv', mode='r') as csv_file:
     csv_reader = csv.DictReader(csv_file, delimiter=',')
     line_count = 0
@@ -39,16 +46,33 @@ with open('data.csv', mode='r') as csv_file:
             print(f'Column names are {", ".join(row)}')
             line_count += 1
         else:
+            timestamps.append(row['TimeStamp'])
+            alpha_microvolts.append(average_brain_reading(row, 'Alpha'))
+            beta_microvolts.append(average_brain_reading(row, 'Beta'))
+            gamma_microvolts.append(average_brain_reading(row, 'Gamma'))
+            delta_microvolts.append(average_brain_reading(row, 'Delta'))
+            theta_microvolts.append(average_brain_reading(row, 'Theta'))
+
             # print(row['TimeStamp'])
             # date_time_str = row[0]
             # date_time_obj = datetime.datetime.strptime(date_time_str, '%Y-%m-%d %H:%M:%S.%f')
             # print('Date:', date_time_obj.date())
             # print('Time:', date_time_obj.time())
             # print('Date-time:', date_time_obj)
-            for wave in WaveType:
-                print(f'Wave: {wave}, Average: {average_brain_reading(row, wave)}')
+
+            # for wave in WaveType:
+            #     print(f'Wave: {wave}, Average: {average_brain_reading(row, wave)}')
+
             line_count += 1
     print(f'Processed {line_count} lines.')
 
 if __name__ == "__main__":
+    plt.plot(timestamps, alpha_microvolts, label='Alpha')
+    plt.plot(timestamps, beta_microvolts, label='Beta')
+    plt.plot(timestamps, gamma_microvolts, label='Gamma')
+    plt.plot(timestamps, delta_microvolts, label='Delta')
+    plt.plot(timestamps, theta_microvolts, label='Theta')
+
+    # plt.ylabel('Microvolts')
+    plt.show()
     pass
